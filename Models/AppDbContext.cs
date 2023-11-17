@@ -19,11 +19,11 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
     public DbSet<Employee> Employee { get; set; } = default!;
-    public DbSet<hr_webapi.Models.Paycheque> Paycheque { get; set; } = default!;
-    public DbSet<hr_webapi.Models.Shift> Shift { get; set; } = default!;
-    public DbSet<hr_webapi.Models.PayDetail> PayDetail { get; set; } = default!;
-    public DbSet<hr_webapi.Models.PayInfo> PayInfo { get; set; } = default!;
-    public DbSet<hr_webapi.Models.EmploymentEvent> EmploymentEvent { get; set; } = default!;
-    public DbSet<hr_webapi.Models.DayOff> DayOff { get; set; } = default!;
-    public DbSet<hr_webapi.Models.DeductionDetail> DeductionDetail { get; set; } = default!;
+    public DbSet<Paycheque> Paycheque { get; set; } = default!;
+    public DbSet<Shift> Shift { get; set; } = default!;
+    public DbSet<PayDetail> PayDetail { get; set; } = default!;
+    public DbSet<PayInfo> PayInfo { get; set; } = default!;
+    public DbSet<EmploymentEvent> EmploymentEvent { get; set; } = default!;
+    public DbSet<DayOff> DayOff { get; set; } = default!;
+    public DbSet<DeductionDetail> DeductionDetail { get; set; } = default!;
 }
