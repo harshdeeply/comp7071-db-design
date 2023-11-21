@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class EmploymentEventController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public EmploymentEventController(AppDbContext context)
+        public EmploymentEventController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EmploymentEvent>>> GetEmploymentEvent()
         {
-          if (_context.EmploymentEvent == null)
+          if (_context.EmploymentEvents == null)
           {
               return NotFound();
           }
-            return await _context.EmploymentEvent.ToListAsync();
+            return await _context.EmploymentEvents.ToListAsync();
         }
 
         // GET: api/EmploymentEvent/5
         [HttpGet("{id}")]
         public async Task<ActionResult<EmploymentEvent>> GetEmploymentEvent(Guid id)
         {
-          if (_context.EmploymentEvent == null)
+          if (_context.EmploymentEvents == null)
           {
               return NotFound();
           }
-            var employmentEvent = await _context.EmploymentEvent.FindAsync(id);
+            var employmentEvent = await _context.EmploymentEvents.FindAsync(id);
 
             if (employmentEvent == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<EmploymentEvent>> PostEmploymentEvent(EmploymentEvent employmentEvent)
         {
-          if (_context.EmploymentEvent == null)
+          if (_context.EmploymentEvents == null)
           {
-              return Problem("Entity set 'AppDbContext.EmploymentEvent'  is null.");
+              return Problem("Entity set 'EmployeeContext.EmploymentEvent'  is null.");
           }
-            _context.EmploymentEvent.Add(employmentEvent);
+            _context.EmploymentEvents.Add(employmentEvent);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmploymentEvent", new { id = employmentEvent.EmploymentEventId }, employmentEvent);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmploymentEvent(Guid id)
         {
-            if (_context.EmploymentEvent == null)
+            if (_context.EmploymentEvents == null)
             {
                 return NotFound();
             }
-            var employmentEvent = await _context.EmploymentEvent.FindAsync(id);
+            var employmentEvent = await _context.EmploymentEvents.FindAsync(id);
             if (employmentEvent == null)
             {
                 return NotFound();
             }
 
-            _context.EmploymentEvent.Remove(employmentEvent);
+            _context.EmploymentEvents.Remove(employmentEvent);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool EmploymentEventExists(Guid id)
         {
-            return (_context.EmploymentEvent?.Any(e => e.EmploymentEventId == id)).GetValueOrDefault();
+            return (_context.EmploymentEvents?.Any(e => e.EmploymentEventId == id)).GetValueOrDefault();
         }
     }
 }

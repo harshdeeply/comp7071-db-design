@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class DayOffController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public DayOffController(AppDbContext context)
+        public DayOffController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DayOff>>> GetDayOff()
         {
-          if (_context.DayOff == null)
+          if (_context.DayOffs == null)
           {
               return NotFound();
           }
-            return await _context.DayOff.ToListAsync();
+            return await _context.DayOffs.ToListAsync();
         }
 
         // GET: api/DayOff/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DayOff>> GetDayOff(Guid id)
         {
-          if (_context.DayOff == null)
+          if (_context.DayOffs == null)
           {
               return NotFound();
           }
-            var dayOff = await _context.DayOff.FindAsync(id);
+            var dayOff = await _context.DayOffs.FindAsync(id);
 
             if (dayOff == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<DayOff>> PostDayOff(DayOff dayOff)
         {
-          if (_context.DayOff == null)
+          if (_context.DayOffs == null)
           {
-              return Problem("Entity set 'AppDbContext.DayOff'  is null.");
+              return Problem("Entity set 'EmployeeContext.DayOff'  is null.");
           }
-            _context.DayOff.Add(dayOff);
+            _context.DayOffs.Add(dayOff);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDayOff", new { id = dayOff.DayOffId }, dayOff);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDayOff(Guid id)
         {
-            if (_context.DayOff == null)
+            if (_context.DayOffs == null)
             {
                 return NotFound();
             }
-            var dayOff = await _context.DayOff.FindAsync(id);
+            var dayOff = await _context.DayOffs.FindAsync(id);
             if (dayOff == null)
             {
                 return NotFound();
             }
 
-            _context.DayOff.Remove(dayOff);
+            _context.DayOffs.Remove(dayOff);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool DayOffExists(Guid id)
         {
-            return (_context.DayOff?.Any(e => e.DayOffId == id)).GetValueOrDefault();
+            return (_context.DayOffs?.Any(e => e.DayOffId == id)).GetValueOrDefault();
         }
     }
 }

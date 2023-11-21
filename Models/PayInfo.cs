@@ -3,7 +3,6 @@ namespace hr_webapi.Models
     public class PayInfo
     {
         public Guid PayInfoId { get; set; }
-        public Employee? Employee { get; set; }
         public double Salary { get; set; }
         public double HourlyWage { get; set; }
         public double OvertimeRate { get; set; }

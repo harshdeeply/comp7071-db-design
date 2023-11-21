@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class ShiftController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public ShiftController(AppDbContext context)
+        public ShiftController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Shift>>> GetShift()
         {
-          if (_context.Shift == null)
+          if (_context.Shifts == null)
           {
               return NotFound();
           }
-            return await _context.Shift.ToListAsync();
+            return await _context.Shifts.ToListAsync();
         }
 
         // GET: api/Shift/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Shift>> GetShift(Guid id)
         {
-          if (_context.Shift == null)
+          if (_context.Shifts == null)
           {
               return NotFound();
           }
-            var shift = await _context.Shift.FindAsync(id);
+            var shift = await _context.Shifts.FindAsync(id);
 
             if (shift == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Shift>> PostShift(Shift shift)
         {
-          if (_context.Shift == null)
+          if (_context.Shifts == null)
           {
-              return Problem("Entity set 'AppDbContext.Shift'  is null.");
+              return Problem("Entity set 'EmployeeContext.Shift'  is null.");
           }
-            _context.Shift.Add(shift);
+            _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetShift", new { id = shift.ShiftId }, shift);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(Guid id)
         {
-            if (_context.Shift == null)
+            if (_context.Shifts == null)
             {
                 return NotFound();
             }
-            var shift = await _context.Shift.FindAsync(id);
+            var shift = await _context.Shifts.FindAsync(id);
             if (shift == null)
             {
                 return NotFound();
             }
 
-            _context.Shift.Remove(shift);
+            _context.Shifts.Remove(shift);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool ShiftExists(Guid id)
         {
-            return (_context.Shift?.Any(e => e.ShiftId == id)).GetValueOrDefault();
+            return (_context.Shifts?.Any(e => e.ShiftId == id)).GetValueOrDefault();
         }
     }
 }

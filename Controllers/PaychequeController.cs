@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class PaychequeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public PaychequeController(AppDbContext context)
+        public PaychequeController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Paycheque>>> GetPaycheque()
         {
-          if (_context.Paycheque == null)
+          if (_context.Paycheques == null)
           {
               return NotFound();
           }
-            return await _context.Paycheque.ToListAsync();
+            return await _context.Paycheques.ToListAsync();
         }
 
         // GET: api/Paycheque/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Paycheque>> GetPaycheque(Guid id)
         {
-          if (_context.Paycheque == null)
+          if (_context.Paycheques == null)
           {
               return NotFound();
           }
-            var paycheque = await _context.Paycheque.FindAsync(id);
+            var paycheque = await _context.Paycheques.FindAsync(id);
 
             if (paycheque == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Paycheque>> PostPaycheque(Paycheque paycheque)
         {
-          if (_context.Paycheque == null)
+          if (_context.Paycheques == null)
           {
-              return Problem("Entity set 'AppDbContext.Paycheque'  is null.");
+              return Problem("Entity set 'EmployeeContext.Paycheque'  is null.");
           }
-            _context.Paycheque.Add(paycheque);
+            _context.Paycheques.Add(paycheque);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPaycheque", new { id = paycheque.PaychequeId }, paycheque);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaycheque(Guid id)
         {
-            if (_context.Paycheque == null)
+            if (_context.Paycheques == null)
             {
                 return NotFound();
             }
-            var paycheque = await _context.Paycheque.FindAsync(id);
+            var paycheque = await _context.Paycheques.FindAsync(id);
             if (paycheque == null)
             {
                 return NotFound();
             }
 
-            _context.Paycheque.Remove(paycheque);
+            _context.Paycheques.Remove(paycheque);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool PaychequeExists(Guid id)
         {
-            return (_context.Paycheque?.Any(e => e.PaychequeId == id)).GetValueOrDefault();
+            return (_context.Paycheques?.Any(e => e.PaychequeId == id)).GetValueOrDefault();
         }
     }
 }

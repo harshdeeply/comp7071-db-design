@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class PayDetailController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public PayDetailController(AppDbContext context)
+        public PayDetailController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PayDetail>>> GetPayDetail()
         {
-          if (_context.PayDetail == null)
+          if (_context.PayDetails == null)
           {
               return NotFound();
           }
-            return await _context.PayDetail.ToListAsync();
+            return await _context.PayDetails.ToListAsync();
         }
 
         // GET: api/PayDetail/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PayDetail>> GetPayDetail(Guid id)
         {
-          if (_context.PayDetail == null)
+          if (_context.PayDetails == null)
           {
               return NotFound();
           }
-            var payDetail = await _context.PayDetail.FindAsync(id);
+            var payDetail = await _context.PayDetails.FindAsync(id);
 
             if (payDetail == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<PayDetail>> PostPayDetail(PayDetail payDetail)
         {
-          if (_context.PayDetail == null)
+          if (_context.PayDetails == null)
           {
-              return Problem("Entity set 'AppDbContext.PayDetail'  is null.");
+              return Problem("Entity set 'EmployeeContext.PayDetail'  is null.");
           }
-            _context.PayDetail.Add(payDetail);
+            _context.PayDetails.Add(payDetail);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPayDetail", new { id = payDetail.PayDetailId }, payDetail);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePayDetail(Guid id)
         {
-            if (_context.PayDetail == null)
+            if (_context.PayDetails == null)
             {
                 return NotFound();
             }
-            var payDetail = await _context.PayDetail.FindAsync(id);
+            var payDetail = await _context.PayDetails.FindAsync(id);
             if (payDetail == null)
             {
                 return NotFound();
             }
 
-            _context.PayDetail.Remove(payDetail);
+            _context.PayDetails.Remove(payDetail);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool PayDetailExists(Guid id)
         {
-            return (_context.PayDetail?.Any(e => e.PayDetailId == id)).GetValueOrDefault();
+            return (_context.PayDetails?.Any(e => e.PayDetailId == id)).GetValueOrDefault();
         }
     }
 }

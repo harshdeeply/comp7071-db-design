@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public EmployeeController(AppDbContext context)
+        public EmployeeController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,30 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
         {
-          if (_context.Employee == null)
+          if (_context.Employees == null)
           {
               return NotFound();
           }
-            return await _context.Employee.ToListAsync();
+            return await _context.Employees.ToListAsync();
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
-          if (_context.Employee == null)
+          if (_context.Employees == null)
           {
               return NotFound();
           }
-            var employee = await _context.Employee.FindAsync(id);
+            var employee = await _context.Employees
+                                         .Include(e => e.Manager)
+                                         .Include(e => e.PayInfo)
+                                         .Include(e => e.EmergencyContactInfo)
+                                         .Include(e => e.CurrentAddress)
+                                         .Include(e => e.DayOffs)
+                                         .Include(e => e.Schedules)
+                                         .Include(e => e.Shifts)
+                                         .FirstOrDefaultAsync(e => e.EmployeeId == id);
 
             if (employee == null)
             {
@@ -85,11 +94,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-          if (_context.Employee == null)
+          if (_context.Employees == null)
           {
-              return Problem("Entity set 'AppDbContext.Employee'  is null.");
+              return Problem("Entity set 'EmployeeContext.Employee'  is null.");
           }
-            _context.Employee.Add(employee);
+            _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployee", new { id = employee.EmployeeId }, employee);
@@ -99,25 +108,69 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(Guid id)
         {
-            if (_context.Employee == null)
+            if (_context.Employees == null)
             {
                 return NotFound();
             }
-            var employee = await _context.Employee.FindAsync(id);
+            var employee = await _context.Employees.FindAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.Employee.Remove(employee);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
+        // GET: api/Employee/5/PayInfo
+        [HttpGet("{id}/PayInfo")]
+        public async Task<ActionResult<PayInfo>> GetPayInfoForEmployee(Guid id)
+        {
+            if (_context.Employees == null)
+            {
+                return NotFound();
+            }
+            var employee = await _context.Employees.FindAsync(id);
+
+            if (employee == null)
+            {
+                return NotFound("The Employee is not valid");
+            }
+
+            if (employee.PayInfo == null)
+            {
+                return NoContent();
+            }
+
+            return employee.PayInfo;
+        }
+
+        // GET: api/Employee/5/Shift
+        [HttpPost("{id}/Shift")]
+        public async Task<ActionResult<List<Shift>>> AddShiftForEmployee(Guid id, Shift shift)
+        {
+            if (_context.Employees == null)
+            {
+                return NotFound();
+            }
+            var employee = await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeId == id);
+
+            if (employee == null)
+            {
+                return NotFound("The Employee is not valid");
+            }
+
+            employee.Shifts.Add(shift);
+            await _context.SaveChangesAsync();
+
+            return employee.Shifts;
+        }
+
         private bool EmployeeExists(Guid id)
         {
-            return (_context.Employee?.Any(e => e.EmployeeId == id)).GetValueOrDefault();
+            return (_context.Employees?.Any(e => e.EmployeeId == id)).GetValueOrDefault();
         }
     }
 }

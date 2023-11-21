@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using hr_webapi.DataAccess;
 
 namespace hr_webapi.Controllers
 {
@@ -13,9 +14,9 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class DeductionDetailController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly EmployeeContext _context;
 
-        public DeductionDetailController(AppDbContext context)
+        public DeductionDetailController(EmployeeContext context)
         {
             _context = context;
         }
@@ -24,22 +25,22 @@ namespace hr_webapi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeductionDetail>>> GetDeductionDetail()
         {
-          if (_context.DeductionDetail == null)
+          if (_context.DeductionDetails == null)
           {
               return NotFound();
           }
-            return await _context.DeductionDetail.ToListAsync();
+            return await _context.DeductionDetails.ToListAsync();
         }
 
         // GET: api/DeductionDetail/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DeductionDetail>> GetDeductionDetail(Guid id)
         {
-          if (_context.DeductionDetail == null)
+          if (_context.DeductionDetails == null)
           {
               return NotFound();
           }
-            var deductionDetail = await _context.DeductionDetail.FindAsync(id);
+            var deductionDetail = await _context.DeductionDetails.FindAsync(id);
 
             if (deductionDetail == null)
             {
@@ -85,11 +86,11 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<DeductionDetail>> PostDeductionDetail(DeductionDetail deductionDetail)
         {
-          if (_context.DeductionDetail == null)
+          if (_context.DeductionDetails == null)
           {
-              return Problem("Entity set 'AppDbContext.DeductionDetail'  is null.");
+              return Problem("Entity set 'EmployeeContext.DeductionDetail'  is null.");
           }
-            _context.DeductionDetail.Add(deductionDetail);
+            _context.DeductionDetails.Add(deductionDetail);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDeductionDetail", new { id = deductionDetail.DeductionDetailId }, deductionDetail);
@@ -99,17 +100,17 @@ namespace hr_webapi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDeductionDetail(Guid id)
         {
-            if (_context.DeductionDetail == null)
+            if (_context.DeductionDetails == null)
             {
                 return NotFound();
             }
-            var deductionDetail = await _context.DeductionDetail.FindAsync(id);
+            var deductionDetail = await _context.DeductionDetails.FindAsync(id);
             if (deductionDetail == null)
             {
                 return NotFound();
             }
 
-            _context.DeductionDetail.Remove(deductionDetail);
+            _context.DeductionDetails.Remove(deductionDetail);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +118,7 @@ namespace hr_webapi.Controllers
 
         private bool DeductionDetailExists(Guid id)
         {
-            return (_context.DeductionDetail?.Any(e => e.DeductionDetailId == id)).GetValueOrDefault();
+            return (_context.DeductionDetails?.Any(e => e.DeductionDetailId == id)).GetValueOrDefault();
         }
     }
 }
