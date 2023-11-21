@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace hr_webapi.Models
 {
     public class PayInfo
     {
         public Guid PayInfoId { get; set; }
+        [JsonIgnore]
         public Employee? Employee { get; set; }
         public double Salary { get; set; }
         public double HourlyWage { get; set; }

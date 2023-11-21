@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace hr_webapi.Models
 {
@@ -6,6 +6,7 @@ namespace hr_webapi.Models
     {
         public Guid DayOffId { get; set; }
         public Guid EmployeeId { get; set; }
+        [JsonIgnore]
         public  Employee Employee { get; set; }
         public  string Type { get; set; }
         public  string Reason { get; set; }

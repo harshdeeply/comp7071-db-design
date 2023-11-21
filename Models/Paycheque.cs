@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace hr_webapi.Models
 {
     public class Paycheque
     {
         public Guid PaychequeId { get; set; }
+        [JsonIgnore]
         public  Employee Employee { get; set; }
         public  Shift[] Shifts { get; set; }
         public DateTime PayDate { get; set; }
