@@ -1,14 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using hr_webapi.Models;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace hr_webapi.Models;
-
-public class AppDbContext : DbContext
+public class AppDbContext : DbContext, IAppDbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
     }
+    public EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+    {
+        return base.Entry(entity);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Employee
@@ -18,6 +22,12 @@ public class AppDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await base.SaveChangesAsync();
+    }
+
     public DbSet<Employee> Employee { get; set; } = default!;
     public DbSet<Paycheque> Paycheque { get; set; } = default!;
     public DbSet<Shift> Shift { get; set; } = default!;

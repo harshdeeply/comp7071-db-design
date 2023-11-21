@@ -13,8 +13,8 @@ namespace hr_webapi.Models
         public int SickDaysLeft { get; set; }
         public double VacationDaysLeft { get; set; }
         public double MaxBreakTime { get; set; }
-        public string DirectDepositAccountNumber { get; set; }
-        public string DirectDepositBranchNumber { get; set; }
-        public string DirectDepositTransitNumber { get; set; }
+        public string? DirectDepositAccountNumber { get; set; }
+        public string? DirectDepositBranchNumber { get; set; }
+        public string? DirectDepositTransitNumber { get; set; }
     }
 }

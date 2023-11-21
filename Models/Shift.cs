@@ -4,7 +4,7 @@ namespace hr_webapi.Models;
 public class Shift
 {
     [JsonIgnore]
-    public Employee Employee { get; set; }
+    public Employee? Employee { get; set; }
     public Guid ShiftId { get; set; }
     public DateTime ScheduledTimeIn { get; set; }
     public DateTime ScheduledTimeOut { get; set; }
@@ -14,5 +14,5 @@ public class Shift
     public DateTime BreakTimeIn { get; set; }
     public DateTime BreakTimeOut { get; set; }
     [JsonIgnore]
-    public Paycheque Paycheque { get; set; }
+    public Paycheque? Paycheque { get; set; }
 }

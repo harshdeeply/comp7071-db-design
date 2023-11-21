@@ -4,6 +4,6 @@ namespace hr_webapi.Models
     {
         public Guid EmploymentEventId { get; set; }
         public int Day { get; set; }
-        public string Event { get; set; }
+        public string? Event { get; set; }
     }
 }

@@ -13,21 +13,21 @@ namespace hr_webapi.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAppDbContext _context;
 
-        public EmployeeController(AppDbContext context)
+        public EmployeeController(IAppDbContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         // GET: api/Employee
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
         {
-          if (_context.Employee == null)
-          {
-              return NotFound();
-          }
+            if (_context.Employee == null)
+            {
+                return NotFound();
+            }
             return await _context.Employee.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace hr_webapi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(Guid id)
         {
-          if (_context.Employee == null)
-          {
-              return NotFound();
-          }
+            if (_context.Employee == null)
+            {
+                return NotFound();
+            }
             var employee = await _context.Employee.FindAsync(id);
 
             if (employee == null)
@@ -85,10 +85,10 @@ namespace hr_webapi.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-          if (_context.Employee == null)
-          {
-              return Problem("Entity set 'AppDbContext.Employee'  is null.");
-          }
+            if (_context.Employee == null)
+            {
+                return Problem("Entity set 'AppDbContext.Employee'  is null.");
+            }
             _context.Employee.Add(employee);
             await _context.SaveChangesAsync();
 
